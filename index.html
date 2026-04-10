@@ -12,396 +12,128 @@
 <title>My List</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=Hurricane&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-:root {
-  --teal: #2AADA8;
-  --navy: #1B2D3E;
-  --magenta: #E8357A;
-  --cream: #FAF8F4;
-  --gold: #D4A843;
-  --light: #ede9e0;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --teal:#2AADA8;--navy:#1B2D3E;--magenta:#E8357A;--cream:#FAF8F4;--gold:#D4A843;--light:#ede9e0;
 }
+html,body{height:100%;overscroll-behavior:none;}
+body{background:var(--navy);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;min-height:100vh;min-height:-webkit-fill-available;padding-top:env(safe-area-inset-top);}
 
-html, body {
-  height: 100%;
-  overscroll-behavior: none;
-}
+/* HEADER */
+.header{background:var(--navy);padding:16px 20px 10px;flex-shrink:0;position:sticky;top:0;z-index:10;}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.script{font-family:'Hurricane',cursive;font-size:36px;color:var(--gold);line-height:1;}
+.date-pill{background:var(--teal);color:white;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:20px;}
+.progress-track{height:5px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--magenta));border-radius:10px;transition:width .5s ease;}
+.progress-label{font-size:11px;color:rgba(255,255,255,.35);margin-top:5px;}
+.progress-label strong{color:var(--teal);font-weight:600;}
 
-body {
-  background: var(--navy);
-  font-family: 'DM Sans', sans-serif;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  /* safe areas for notch + home indicator */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: 0;
-}
+/* TABS */
+.tabs{display:flex;background:var(--navy);border-bottom:2px solid rgba(255,255,255,.07);flex-shrink:0;}
+.tab{flex:1;padding:10px 0;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.1em;color:rgba(255,255,255,.35);text-align:center;cursor:pointer;border:none;background:none;transition:color .15s;}
+.tab.active{color:var(--gold);border-bottom:2px solid var(--gold);margin-bottom:-2px;}
 
-/* ── HEADER ── */
-.header {
-  background: var(--navy);
-  padding: 16px 20px 12px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+/* SCROLL */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 0 130px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
 
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
+/* SECTION */
+.section{margin:0 12px 10px;background:var(--cream);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.section-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:white;border-bottom:1px solid var(--light);cursor:pointer;user-select:none;min-height:52px;}
+.section-head:active{background:#f5f2eb;}
+.section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.14em;color:var(--navy);flex:1;}
+.section-meta{display:flex;align-items:center;gap:8px;}
+.section-count{font-size:12px;font-weight:600;color:#bbb;}
+.section-count .done-count{color:var(--teal);}
+.chevron{color:#ccc;font-size:11px;transition:transform .22s ease;}
+.section.collapsed .chevron{transform:rotate(-90deg);}
+.section.collapsed .section-body{display:none;}
 
-.script {
-  font-family: 'Hurricane', cursive;
-  font-size: 38px;
-  color: var(--gold);
-  line-height: 1;
-}
+/* ITEMS */
+.todo-item{display:flex;align-items:center;gap:14px;padding:0 16px;min-height:52px;border-bottom:1px solid var(--light);cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .1s;animation:popIn .18s ease;}
+@keyframes popIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.todo-item:active{background:#f5f2eb;}
+.todo-item:last-of-type{border-bottom:none;}
+.todo-item.done .item-text{text-decoration:line-through;color:#bbb;}
+.checkbox{width:24px;height:24px;border:2px solid #d0ccc4;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;background:white;}
+.todo-item.done .checkbox{background:var(--teal);border-color:var(--teal);}
+.checkmark{display:none;color:white;font-size:13px;font-weight:700;line-height:1;}
+.todo-item.done .checkmark{display:block;}
+.item-body{flex:1;padding:12px 0;}
+.item-text{font-size:15px;color:var(--navy);line-height:1.4;}
+.item-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:10px;margin-top:4px;}
+.item-tag.urgent{background:#fdeef4;color:var(--magenta);}
+.item-tag.pending{background:#e8f7f6;color:var(--teal);}
+.item-tag.personal{background:#fef9ec;color:var(--gold);}
 
-.date-pill {
-  background: var(--teal);
-  color: white;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: 20px;
-}
+/* INLINE ADD */
+.inline-add{display:flex;align-items:center;gap:0;padding:0 16px;min-height:48px;background:#fdfcf9;border-top:1px solid var(--light);}
+.inline-add input{flex:1;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--navy);padding:14px 0;outline:none;}
+.inline-add input::placeholder{color:#c5c0b8;font-style:italic;font-size:14px;}
+.inline-btn{background:var(--teal);border:none;border-radius:8px;color:white;font-size:22px;font-weight:300;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.inline-btn:active{background:#1e8a86;transform:scale(.93);}
 
-/* ── PROGRESS ── */
-.progress-track {
-  height: 5px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  overflow: hidden;
-}
+/* DONE LOG */
+.done-month{margin:0 12px 6px;padding:10px 4px 4px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.15em;color:rgba(255,255,255,.35);}
+.done-card{margin:0 12px 10px;background:var(--cream);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.15);}
+.done-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--light);}
+.done-item:last-child{border-bottom:none;}
+.done-check{width:22px;height:22px;background:var(--teal);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.done-check span{color:white;font-size:12px;font-weight:700;}
+.done-body{flex:1;}
+.done-text{font-size:14px;color:#888;text-decoration:line-through;line-height:1.4;}
+.done-meta{font-size:11px;color:#bbb;margin-top:3px;}
+.done-section-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-right:6px;}
+.empty-done{text-align:center;padding:48px 20px;color:rgba(255,255,255,.25);font-size:14px;line-height:1.6;}
+.expire-note{text-align:center;padding:8px 20px 0;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.04em;}
 
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--teal), var(--magenta));
-  border-radius: 10px;
-  transition: width 0.5s ease;
-}
+/* AI DRAWER */
+.ai-fab{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));right:16px;width:52px;height:52px;background:var(--magenta);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(232,53,122,.45);z-index:30;font-size:22px;transition:transform .2s;}
+.ai-fab:active{transform:scale(.92);}
+.ai-drawer{position:fixed;bottom:0;left:0;right:0;background:#0f1e2c;border-radius:20px 20px 0 0;z-index:40;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);padding-bottom:env(safe-area-inset-bottom);max-height:80vh;display:flex;flex-direction:column;}
+.ai-drawer.open{transform:translateY(0);}
+.ai-handle{width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:12px auto 0;}
+.ai-header{display:flex;align-items:center;gap:10px;padding:16px 20px 12px;}
+.ai-header-icon{font-size:22px;}
+.ai-header-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;color:var(--cream);flex:1;}
+.ai-close{background:none;border:none;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;padding:4px;}
+.ai-chat{flex:1;overflow-y:auto;padding:0 16px 12px;display:flex;flex-direction:column;gap:10px;}
+.ai-bubble{padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.5;max-width:92%;animation:popIn .2s ease;}
+.ai-bubble.assistant{background:rgba(42,173,168,.15);color:var(--cream);border-bottom-left-radius:4px;align-self:flex-start;}
+.ai-bubble.user{background:var(--magenta);color:white;border-bottom-right-radius:4px;align-self:flex-end;}
+.ai-bubble.thinking{color:rgba(255,255,255,.4);font-style:italic;}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px;}
+.ai-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:7px 14px;font-size:13px;color:rgba(255,255,255,.7);cursor:pointer;transition:background .15s;}
+.ai-chip:active{background:rgba(42,173,168,.25);color:var(--teal);}
+.ai-input-row{display:flex;gap:8px;padding:8px 16px 12px;border-top:1px solid rgba(255,255,255,.07);}
+.ai-input{flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:white;outline:none;}
+.ai-input:focus{border-color:var(--teal);}
+.ai-input::placeholder{color:rgba(255,255,255,.25);}
+.ai-send{background:var(--teal);border:none;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:18px;}
+.ai-send:active{background:#1e8a86;}
+.ai-add-btn{background:rgba(42,173,168,.2);border:1px solid var(--teal);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--teal);cursor:pointer;margin-top:6px;display:inline-block;}
+.ai-add-btn:active{background:rgba(42,173,168,.35);}
 
-.progress-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.35);
-  margin-top: 5px;
-  letter-spacing: 0.04em;
-}
+/* BOTTOM BAR */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);border-top:3px solid var(--magenta);padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom));z-index:20;display:flex;gap:8px;align-items:center;}
+.bottom-bar input{flex:1;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:white;outline:none;}
+.bottom-bar input:focus{border-color:var(--teal);}
+.bottom-bar input::placeholder{color:rgba(255,255,255,.28);}
+.bottom-bar select{background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 8px;font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,.65);outline:none;max-width:90px;}
+.bottom-bar select option{background:#1B2D3E;color:white;}
+.add-btn{background:var(--magenta);color:white;border:none;border-radius:10px;padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;cursor:pointer;flex-shrink:0;}
+.add-btn:active{background:#c42c68;transform:scale(.96);}
 
-.progress-label strong { color: var(--teal); font-weight: 600; }
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35;opacity:0;pointer-events:none;transition:opacity .3s;}
+.overlay.show{opacity:1;pointer-events:all;}
 
-/* ── SCROLL AREA ── */
-.scroll-area {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 12px 0 120px;
-}
-
-/* ── SECTION ── */
-.section {
-  margin: 0 12px 10px;
-  background: var(--cream);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-}
-
-.section-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  background: white;
-  border-bottom: 1px solid var(--light);
-  cursor: pointer;
-  user-select: none;
-  /* big tap target */
-  min-height: 52px;
-  -webkit-user-select: none;
-}
-
-.section-head:active { background: #f5f2eb; }
-
-.section-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.section-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.14em;
-  color: var(--navy);
-  flex: 1;
-}
-
-.section-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-count {
-  font-size: 12px;
-  font-weight: 600;
-  color: #bbb;
-}
-
-.section-count .done-count { color: var(--teal); }
-
-.chevron {
-  color: #ccc;
-  font-size: 11px;
-  transition: transform 0.22s ease;
-  line-height: 1;
-}
-
-.section.collapsed .chevron { transform: rotate(-90deg); }
-.section.collapsed .section-body { display: none; }
-
-/* ── ITEMS ── */
-.todo-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 0 16px;
-  min-height: 52px;
-  border-bottom: 1px solid var(--light);
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  transition: background 0.1s;
-  animation: popIn 0.18s ease;
-}
-
-@keyframes popIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.todo-item:active { background: #f5f2eb; }
-.todo-item:last-of-type { border-bottom: none; }
-
-.todo-item.done .item-text {
-  text-decoration: line-through;
-  color: #bbb;
-}
-
-.checkbox {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #d0ccc4;
-  border-radius: 6px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  background: white;
-}
-
-.todo-item.done .checkbox {
-  background: var(--teal);
-  border-color: var(--teal);
-}
-
-.checkmark {
-  display: none;
-  color: white;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.todo-item.done .checkmark { display: block; }
-
-.item-body { flex: 1; padding: 12px 0; }
-
-.item-text {
-  font-size: 15px;
-  color: var(--navy);
-  line-height: 1.4;
-}
-
-.item-tag {
-  display: inline-block;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 10px;
-  margin-top: 4px;
-}
-
-.item-tag.urgent  { background: #fdeef4; color: var(--magenta); }
-.item-tag.pending { background: #e8f7f6; color: var(--teal); }
-.item-tag.personal{ background: #fef9ec; color: var(--gold); }
-
-/* ── INLINE ADD ── */
-.inline-add {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  padding: 0 16px;
-  min-height: 48px;
-  background: #fdfcf9;
-  border-top: 1px solid var(--light);
-}
-
-.inline-add input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  color: var(--navy);
-  padding: 14px 0;
-  outline: none;
-  /* prevent iOS zoom on focus */
-  font-size: 16px;
-}
-
-.inline-add input::placeholder { color: #c5c0b8; font-style: italic; font-size: 14px; }
-
-.inline-btn {
-  background: var(--teal);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 22px;
-  font-weight: 300;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s, transform 0.1s;
-  line-height: 1;
-}
-
-.inline-btn:active { background: #1e8a86; transform: scale(0.93); }
-
-/* ── STICKY BOTTOM ADD BAR ── */
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--navy);
-  border-top: 3px solid var(--magenta);
-  padding: 10px 14px;
-  padding-bottom: calc(10px + env(safe-area-inset-bottom));
-  z-index: 20;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.bottom-bar input {
-  flex: 1;
-  background: rgba(255,255,255,0.09);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 16px; /* no iOS zoom */
-  color: white;
-  outline: none;
-}
-
-.bottom-bar input:focus { border-color: var(--teal); }
-.bottom-bar input::placeholder { color: rgba(255,255,255,0.28); }
-
-.bottom-bar select {
-  background: rgba(255,255,255,0.09);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  padding: 12px 8px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  color: rgba(255,255,255,0.65);
-  outline: none;
-  max-width: 90px;
-}
-
-.bottom-bar select option { background: #1B2D3E; color: white; }
-
-.add-btn {
-  background: var(--magenta);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s;
-}
-
-.add-btn:active { background: #c42c68; transform: scale(0.96); }
-
-/* ── CLEAR BTN ── */
-.clear-wrap {
-  text-align: center;
-  padding: 6px 0 0;
-}
-
-.clear-btn {
-  background: none;
-  border: none;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
-  cursor: pointer;
-  padding: 8px 14px;
-}
-
-.clear-btn:active { color: var(--magenta); }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed;
-  top: calc(env(safe-area-inset-top) + 12px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-60px);
-  background: var(--teal);
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 9px 20px;
-  border-radius: 20px;
-  transition: transform 0.3s ease;
-  pointer-events: none;
-  z-index: 99;
-  white-space: nowrap;
-}
-
-.toast.show { transform: translateX(-50%) translateY(0); }
+/* TOAST */
+.toast{position:fixed;top:calc(env(safe-area-inset-top) + 12px);left:50%;transform:translateX(-50%) translateY(-60px);background:var(--teal);color:white;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:9px 20px;border-radius:20px;transition:transform .3s ease;pointer-events:none;z-index:99;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -411,20 +143,63 @@ body {
     <div class="script">get it done.</div>
     <div class="date-pill" id="dateLabel"></div>
   </div>
-  <div class="progress-track">
-    <div class="progress-fill" id="progressFill" style="width:0%"></div>
-  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
   <div class="progress-label"><strong id="doneCount">0</strong> of <strong id="totalCount">0</strong> done</div>
 </div>
 
-<div class="scroll-area" id="scrollArea">
-  <div id="sectionsWrap"></div>
-  <div class="clear-wrap">
-    <button class="clear-btn" onclick="clearDone()">✕ Clear completed</button>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('todo')">📋 MY LIST</button>
+  <button class="tab" onclick="switchTab('done')">✅ COMPLETED</button>
+</div>
+
+<div class="scroll-area">
+  <!-- TO DO TAB -->
+  <div class="tab-panel active" id="tab-todo">
+    <div id="sectionsWrap"></div>
+    <div style="text-align:center;padding:6px 0 0;">
+      <button style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);cursor:pointer;padding:8px 14px;" onclick="clearDone()">✕ Remove completed from list</button>
+    </div>
+  </div>
+
+  <!-- DONE TAB -->
+  <div class="tab-panel" id="tab-done">
+    <div id="doneWrap"></div>
+    <div class="expire-note">Items auto-delete after 30 days</div>
   </div>
 </div>
 
-<div class="bottom-bar">
+<!-- AI FAB -->
+<button class="ai-fab" onclick="openAI()" title="AI Assistant">✨</button>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeAI()"></div>
+
+<!-- AI DRAWER -->
+<div class="ai-drawer" id="aiDrawer">
+  <div class="ai-handle"></div>
+  <div class="ai-header">
+    <div class="ai-header-icon">✨</div>
+    <div class="ai-header-title">What's going on?</div>
+    <button class="ai-close" onclick="closeAI()">✕</button>
+  </div>
+  <div class="ai-chat" id="aiChat">
+    <div class="ai-bubble assistant">Hey Erika! Tell me what's on your plate — or just how you're feeling — and I'll help you figure out what to tackle and where to start. 🤙</div>
+  </div>
+  <div class="ai-suggestions" id="aiChips">
+    <div class="ai-chip" onclick="chipSend(this)">I don't know where to start</div>
+    <div class="ai-chip" onclick="chipSend(this)">I'm overwhelmed</div>
+    <div class="ai-chip" onclick="chipSend(this)">What should I do first?</div>
+    <div class="ai-chip" onclick="chipSend(this)">Help me add tasks</div>
+    <div class="ai-chip" onclick="chipSend(this)">I have a client thing I forgot</div>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Type anything…" autocomplete="off" />
+    <button class="ai-send" onclick="sendAI()">➤</button>
+  </div>
+</div>
+
+<!-- BOTTOM ADD BAR -->
+<div class="bottom-bar" id="bottomBar">
   <input id="gInput" placeholder="Quick add…" autocomplete="off" autocorrect="off" />
   <select id="gSection"></select>
   <button class="add-btn" onclick="addGlobal()">ADD</button>
@@ -433,72 +208,93 @@ body {
 <div class="toast" id="toast">Saved ✓</div>
 
 <script>
-const DEFAULT = [
-  {
-    id: "work", title: "WORK", icon: "💻", color: "#2AADA8",
-    items: [
-      { id: 1,  text: "Work on Tamraloo — why is Camps wrong?",                       done: false, tag: "urgent" },
-      { id: 2,  text: "Look at sign-up connections — buttons instead of checkboxes?", done: false, tag: "" },
-      { id: 3,  text: "Look at all the new stuff in Rezen",                           done: false, tag: "" },
-      { id: 4,  text: "Call w/ the vendor",                                           done: false, tag: "" },
-    ]
-  },
-  {
-    id: "clients", title: "CLIENT SITES", icon: "🌐", color: "#E8357A",
-    items: [
-      { id: 10, text: "Tamraloo Studios — continue site build",                       done: false, tag: "pending" },
-      { id: 11, text: "Hillery Wallis (painting contractor) — continue site build",   done: false, tag: "pending" },
-      { id: 12, text: "Amy Pittard (engraved Pyrex) — continue site build",           done: false, tag: "pending" },
-      { id: 13, text: "Roxanne Kalaveras — check DNS / GitHub Pages verification",    done: false, tag: "pending" },
-    ]
-  },
-  {
-    id: "visible", title: "VISIBLE. HOUSEKEEPING", icon: "✨", color: "#D4A843",
-    items: [
-      { id: 20, text: "Link-in-bio — insert real Flodesk form URLs",                  done: false, tag: "pending" },
-      { id: 21, text: "Link-in-bio — confirm booking/scheduler links are live",       done: false, tag: "pending" },
-      { id: 22, text: "Stan Store — finalize branded product thumbnails",              done: false, tag: "pending" },
-    ]
-  },
-  {
-    id: "realestate", title: "REAL ESTATE", icon: "🏡", color: "#1B2D3E",
-    items: [
-      { id: 30, text: "Take people off Realist",                                      done: false, tag: "" },
-      { id: 31, text: "Add Argonaut to Mom's",                                        done: false, tag: "" },
-    ]
-  },
-  {
-    id: "personal", title: "PERSONAL", icon: "🌿", color: "#D4A843",
-    items: [
-      { id: 40, text: "Get bump stuff",                                               done: false, tag: "personal" },
-      { id: 41, text: "Pick up Mav",                                                  done: false, tag: "personal" },
-    ]
-  }
+const DEFAULT_SECTIONS = [
+  {id:"work",title:"WORK",icon:"💻",color:"#2AADA8",items:[
+    {id:1,text:"Work on Tamraloo — why is Camps wrong?",done:false,tag:"urgent"},
+    {id:2,text:"Look at sign-up connections — buttons instead of checkboxes?",done:false,tag:""},
+    {id:3,text:"Look at all the new stuff in Rezen",done:false,tag:""},
+    {id:4,text:"Call w/ the vendor",done:false,tag:""},
+  ]},
+  {id:"clients",title:"CLIENT SITES",icon:"🌐",color:"#E8357A",items:[
+    {id:10,text:"Tamraloo Studios — continue site build",done:false,tag:"pending"},
+    {id:11,text:"Hillery Wallis (painting contractor) — continue site build",done:false,tag:"pending"},
+    {id:12,text:"Amy Pittard (engraved Pyrex) — continue site build",done:false,tag:"pending"},
+    {id:13,text:"Roxanne Kalaveras — check DNS / GitHub Pages verification",done:false,tag:"pending"},
+  ]},
+  {id:"visible",title:"VISIBLE. HOUSEKEEPING",icon:"✨",color:"#D4A843",items:[
+    {id:20,text:"Link-in-bio — insert real Flodesk form URLs",done:false,tag:"pending"},
+    {id:21,text:"Link-in-bio — confirm booking/scheduler links are live",done:false,tag:"pending"},
+    {id:22,text:"Stan Store — finalize branded product thumbnails",done:false,tag:"pending"},
+  ]},
+  {id:"realestate",title:"REAL ESTATE",icon:"🏡",color:"#1B2D3E",items:[
+    {id:30,text:"Take people off Realist",done:false,tag:""},
+    {id:31,text:"Add Argonaut to Mom's",done:false,tag:""},
+  ]},
+  {id:"personal",title:"PERSONAL",icon:"🌿",color:"#D4A843",items:[
+    {id:40,text:"Get bump stuff",done:false,tag:"personal"},
+    {id:41,text:"Pick up Mav",done:false,tag:"personal"},
+  ]}
 ];
 
-let nextId = 200, sections = [], collapsed = {};
+let nextId = 200, sections = [], collapsed = {}, doneLog = [], activeTab = 'todo';
 
+// ── STORAGE ──
 function load() {
   try {
-    const s = localStorage.getItem('erika_v3');
-    if (s) { const p = JSON.parse(s); sections = p.sections; nextId = p.nextId || 200; collapsed = p.collapsed || {}; return; }
+    const s = localStorage.getItem('erika_v4');
+    if (s) {
+      const p = JSON.parse(s);
+      sections  = p.sections;
+      nextId    = p.nextId || 200;
+      collapsed = p.collapsed || {};
+      doneLog   = (p.doneLog || []).filter(d => Date.now() - d.completedAt < 30*24*60*60*1000);
+      return;
+    }
   } catch(e) {}
-  sections = JSON.parse(JSON.stringify(DEFAULT));
+  sections = JSON.parse(JSON.stringify(DEFAULT_SECTIONS));
+  doneLog = [];
 }
 
 function save() {
-  try { localStorage.setItem('erika_v3', JSON.stringify({ sections, nextId, collapsed })); } catch(e) {}
+  try { localStorage.setItem('erika_v4', JSON.stringify({sections,nextId,collapsed,doneLog})); } catch(e) {}
   showToast();
 }
 
 function showToast() {
   const t = document.getElementById('toast');
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1600);
+  setTimeout(()=>t.classList.remove('show'), 1600);
 }
 
+// ── TABS ──
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.querySelectorAll('.tab')[tab==='todo'?0:1].classList.add('active');
+  document.getElementById('bottomBar').style.display = tab==='todo' ? 'flex' : 'none';
+  if (tab==='done') renderDone();
+}
+
+// ── TOGGLE ITEM ──
 function toggleItem(secId, itemId) {
-  sections.find(s => s.id === secId).items.find(i => i.id === itemId).done ^= true;
+  const sec  = sections.find(s=>s.id===secId);
+  const item = sec.items.find(i=>i.id===itemId);
+  item.done  = !item.done;
+  if (item.done) {
+    // archive to done log
+    doneLog.unshift({
+      id: item.id,
+      text: item.text,
+      section: sec.title,
+      sectionId: sec.id,
+      completedAt: Date.now()
+    });
+  } else {
+    // un-check: remove from done log
+    doneLog = doneLog.filter(d=>d.id!==item.id);
+  }
   save(); render();
 }
 
@@ -507,18 +303,19 @@ function toggleSection(secId) {
   save(); render();
 }
 
+// ── ADD ──
 function addToSection(secId, text) {
   if (!text.trim()) return;
-  sections.find(s => s.id === secId).items.push({ id: nextId++, text: text.trim(), done: false, tag: "" });
+  sections.find(s=>s.id===secId).items.push({id:nextId++,text:text.trim(),done:false,tag:""});
   save(); render();
-  setTimeout(() => {
+  setTimeout(()=>{
     const inp = document.querySelector(`[data-inline="${secId}"]`);
     if (inp) inp.focus();
   }, 60);
 }
 
 function addGlobal() {
-  const txt = document.getElementById('gInput').value.trim();
+  const txt   = document.getElementById('gInput').value.trim();
   const secId = document.getElementById('gSection').value;
   if (!txt) return;
   addToSection(secId, txt);
@@ -526,81 +323,74 @@ function addGlobal() {
 }
 
 function clearDone() {
-  sections.forEach(s => { s.items = s.items.filter(i => !i.done); });
+  sections.forEach(s=>{ s.items = s.items.filter(i=>!i.done); });
   save(); render();
 }
 
+// ── RENDER TODO ──
 function render() {
   // date
   const d = new Date();
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('dateLabel').textContent = `${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('dateLabel').textContent=`${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
 
-  // progress
-  let total = 0, done = 0;
-  sections.forEach(s => { total += s.items.length; done += s.items.filter(i => i.done).length; });
-  document.getElementById('doneCount').textContent = done;
-  document.getElementById('totalCount').textContent = total;
-  document.getElementById('progressFill').style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
+  // progress (only undone-capable items)
+  let total=0,done=0;
+  sections.forEach(s=>{total+=s.items.length;done+=s.items.filter(i=>i.done).length;});
+  document.getElementById('doneCount').textContent=done;
+  document.getElementById('totalCount').textContent=total;
+  document.getElementById('progressFill').style.width=(total>0?Math.round(done/total*100):0)+'%';
 
-  // sections
   const wrap = document.getElementById('sectionsWrap');
-  wrap.innerHTML = '';
+  wrap.innerHTML='';
 
-  sections.forEach(sec => {
-    const isCol = collapsed[sec.id];
-    const secDone = sec.items.filter(i => i.done).length;
+  sections.forEach(sec=>{
+    const isCol=collapsed[sec.id];
+    const secDone=sec.items.filter(i=>i.done).length;
+    const el=document.createElement('div');
+    el.className='section'+(isCol?' collapsed':'');
 
-    const el = document.createElement('div');
-    el.className = 'section' + (isCol ? ' collapsed' : '');
-
-    // header
-    const head = document.createElement('div');
-    head.className = 'section-head';
-    head.innerHTML = `
+    const head=document.createElement('div');
+    head.className='section-head';
+    head.innerHTML=`
       <div class="section-icon" style="background:${sec.color}22">${sec.icon}</div>
       <div class="section-title">${sec.title}</div>
       <div class="section-meta">
         <div class="section-count"><span class="done-count">${secDone}</span>/${sec.items.length}</div>
         <div class="chevron">▾</div>
-      </div>
-    `;
-    head.addEventListener('click', () => toggleSection(sec.id));
+      </div>`;
+    head.addEventListener('click',()=>toggleSection(sec.id));
     el.appendChild(head);
 
-    // body
-    const body = document.createElement('div');
-    body.className = 'section-body';
+    const body=document.createElement('div');
+    body.className='section-body';
 
-    sec.items.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'todo-item' + (item.done ? ' done' : '');
-      row.innerHTML = `
+    sec.items.forEach(item=>{
+      const row=document.createElement('div');
+      row.className='todo-item'+(item.done?' done':'');
+      row.innerHTML=`
         <div class="checkbox"><span class="checkmark">✓</span></div>
         <div class="item-body">
           <div class="item-text">${item.text}</div>
-          ${item.tag ? `<span class="item-tag ${item.tag}">${item.tag}</span>` : ''}
-        </div>
-      `;
-      row.addEventListener('click', () => toggleItem(sec.id, item.id));
+          ${item.tag?`<span class="item-tag ${item.tag}">${item.tag}</span>`:''}
+        </div>`;
+      row.addEventListener('click',()=>toggleItem(sec.id,item.id));
       body.appendChild(row);
     });
 
     // inline add
-    const addRow = document.createElement('div');
-    addRow.className = 'inline-add';
-    const inp = document.createElement('input');
-    inp.placeholder = `Add to ${sec.title.toLowerCase()}…`;
-    inp.setAttribute('data-inline', sec.id);
-    inp.setAttribute('autocomplete', 'off');
-    inp.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { addToSection(sec.id, inp.value); inp.value = ''; }
-    });
-    const btn = document.createElement('button');
-    btn.className = 'inline-btn';
-    btn.textContent = '+';
-    btn.addEventListener('click', () => { addToSection(sec.id, inp.value); inp.value = ''; });
+    const addRow=document.createElement('div');
+    addRow.className='inline-add';
+    const inp=document.createElement('input');
+    inp.placeholder=`Add to ${sec.title.toLowerCase()}…`;
+    inp.setAttribute('data-inline',sec.id);
+    inp.setAttribute('autocomplete','off');
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){addToSection(sec.id,inp.value);inp.value='';}});
+    const btn=document.createElement('button');
+    btn.className='inline-btn';
+    btn.textContent='+';
+    btn.addEventListener('click',()=>{addToSection(sec.id,inp.value);inp.value='';});
     addRow.appendChild(inp);
     addRow.appendChild(btn);
     body.appendChild(addRow);
@@ -609,24 +399,184 @@ function render() {
     wrap.appendChild(el);
   });
 
-  // populate section select in bottom bar
-  const sel = document.getElementById('gSection');
-  const prev = sel.value;
-  sel.innerHTML = '';
-  sections.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.id;
-    // shorten labels for mobile
-    const short = { work:'Work', clients:'Clients', visible:'Visible', realestate:'RE', personal:'Personal' };
-    opt.textContent = short[s.id] || s.title;
+  // section select
+  const sel=document.getElementById('gSection');
+  const prev=sel.value;
+  sel.innerHTML='';
+  const short={work:'Work',clients:'Clients',visible:'Visible',realestate:'RE',personal:'Personal'};
+  sections.forEach(s=>{
+    const opt=document.createElement('option');
+    opt.value=s.id;
+    opt.textContent=short[s.id]||s.title;
     sel.appendChild(opt);
   });
-  if (prev) sel.value = prev;
+  if(prev) sel.value=prev;
 
-  // enter key on global input
-  document.getElementById('gInput').onkeydown = e => { if (e.key === 'Enter') addGlobal(); };
+  document.getElementById('gInput').onkeydown=e=>{if(e.key==='Enter')addGlobal();};
 }
 
+// ── RENDER DONE LOG ──
+function renderDone() {
+  const wrap=document.getElementById('doneWrap');
+  wrap.innerHTML='';
+
+  // purge old
+  doneLog=doneLog.filter(d=>Date.now()-d.completedAt<30*24*60*60*1000);
+
+  if(doneLog.length===0){
+    wrap.innerHTML='<div class="empty-done">Nothing completed yet.<br>Check something off your list! 🎉</div>';
+    return;
+  }
+
+  // group by date
+  const groups={};
+  doneLog.forEach(d=>{
+    const dt=new Date(d.completedAt);
+    const key=dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(d);
+  });
+
+  Object.entries(groups).forEach(([date,items])=>{
+    const label=document.createElement('div');
+    label.className='done-month';
+    label.textContent=date;
+    wrap.appendChild(label);
+
+    const card=document.createElement('div');
+    card.className='done-card';
+
+    items.forEach(d=>{
+      const row=document.createElement('div');
+      row.className='done-item';
+      const time=new Date(d.completedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      row.innerHTML=`
+        <div class="done-check"><span>✓</span></div>
+        <div class="done-body">
+          <div class="done-text">${d.text}</div>
+          <div class="done-meta"><span class="done-section-tag">${d.section}</span>${time}</div>
+        </div>`;
+      card.appendChild(row);
+    });
+
+    wrap.appendChild(card);
+  });
+}
+
+// ── AI ASSISTANT ──
+let aiHistory = [];
+
+function openAI() {
+  document.getElementById('aiDrawer').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('aiInput').focus(),400);
+}
+
+function closeAI() {
+  document.getElementById('aiDrawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function chipSend(el) {
+  document.getElementById('aiInput').value = el.textContent;
+  document.getElementById('aiChips').style.display='none';
+  sendAI();
+}
+
+function addBubble(text, role) {
+  const chat=document.getElementById('aiChat');
+  const div=document.createElement('div');
+  div.className=`ai-bubble ${role}`;
+  div.innerHTML=text;
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+  return div;
+}
+
+async function sendAI() {
+  const inp=document.getElementById('aiInput');
+  const msg=inp.value.trim();
+  if(!msg) return;
+  inp.value='';
+
+  addBubble(msg,'user');
+  aiHistory.push({role:'user',content:msg});
+
+  const thinking=addBubble('thinking…','assistant thinking');
+
+  // Build context from current list
+  const listSummary = sections.map(s=>{
+    const open=s.items.filter(i=>!i.done).map(i=>i.text);
+    return open.length ? `${s.title}: ${open.join(', ')}` : null;
+  }).filter(Boolean).join('\n');
+
+  const systemPrompt = `You are a warm, practical productivity assistant helping Erika — a busy entrepreneur who runs three businesses: Visible. (SEO/digital marketing), SparkStudio HQ (coworking space in Loomis CA), and the Poindexter Team (real estate). She's a parent, she's direct, she likes short punchy advice, no fluff.
+
+Her current open tasks:
+${listSummary || 'No tasks yet.'}
+
+Your job: help her figure out what to do, where to start, break down big tasks, or add new ones to her list. Keep responses SHORT — 2-4 sentences max, conversational, real. If you suggest specific tasks she should add, format them clearly on new lines starting with "ADD:" so she can tap to add them. Never use em dashes.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        system: systemPrompt,
+        messages: aiHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "Sorry, couldn't reach AI right now.";
+
+    thinking.remove();
+    aiHistory.push({role:'assistant',content:reply});
+
+    // Parse ADD: lines into tappable buttons
+    const lines = reply.split('\n');
+    let mainText = '';
+    const addItems = [];
+    lines.forEach(l=>{
+      if(l.startsWith('ADD:')) addItems.push(l.replace('ADD:','').trim());
+      else mainText += l + '\n';
+    });
+
+    const bubble = addBubble(mainText.trim().replace(/\n/g,'<br>'), 'assistant');
+
+    if(addItems.length) {
+      addItems.forEach(item=>{
+        const btn=document.createElement('div');
+        btn.className='ai-add-btn';
+        btn.textContent='+ Add: '+item;
+        btn.addEventListener('click',()=>{
+          // add to most relevant section by keyword
+          let secId='work';
+          if(/personal|mav|bump|pick up/i.test(item)) secId='personal';
+          else if(/realist|argonaut|real estate|mom/i.test(item)) secId='realestate';
+          else if(/tamraloo|hillery|amy|roxanne|client|site|wix/i.test(item)) secId='clients';
+          else if(/flodesk|stan|link.in.bio|visible/i.test(item)) secId='visible';
+          addToSection(secId, item);
+          btn.textContent='✓ Added!';
+          btn.style.background='rgba(42,173,168,.25)';
+          btn.style.borderColor='var(--teal)';
+        });
+        bubble.appendChild(btn);
+      });
+    }
+
+  } catch(e) {
+    thinking.remove();
+    addBubble("Couldn't reach AI right now. Check your connection and try again.",'assistant');
+  }
+}
+
+document.getElementById('aiInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter') sendAI();
+});
+
+// ── INIT ──
 load();
 render();
 </script>
